@@ -88,7 +88,31 @@ class controladorEspecie extends Controller
     {
         $dados = Especie::find($id);
         if(isset($dados)){
-            $pet = Pet::where('')
+            $pet = Pet::where('especie', '=', $id)->first();
+            if(!isset($pet)){
+                $dados->delete();
+            }else{
+                return redirect('/especie')->with('danger', 'Erro ao tentar excluir a espécie.');
+            }
+        }else{
+            return redirect('/especie')->with('danger', 'Espécie não cadastrada.');
         }
+        return redirect('/especie')->with('success', 'Cadastro excluído com sucesso.');
     }
+    public function pesquisarEspecie()
+    {
+        return view('sistema.pesquisarEspecie');
+    }
+    public function procurarEspecie(Request $request)
+    {
+        $descricao = $request->input('descricaoEspecie')
+        $especie = DB::table('especie')->select('id', 'descricaoEsepcie')
+                 ->where(DB::raw('lower(descricaoEspecie)'), 'like', '%'.strtolower(%descricao).'%')->aget();
+        if(isset($especie))
+            return view('sistema.especie', compact('especie'));
+        else
+        return redirect('/especie')->with('danger', 'Não foram encontrados registros com o termo pesquisado.')
+
+    }
+
 }
